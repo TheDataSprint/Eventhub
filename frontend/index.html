@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EventHub - Discover, create and manage events with registrations and capacity tracking.">
+    <title>EventHub | Event Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Auth Screen (Login / Register) -->
+    <div id="authScreen" class="auth-overlay">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <span class="logo-icon">◆</span>
+                <h2>EventHub</h2>
+            </div>
+
+            <div class="auth-tabs">
+                <button type="button" class="auth-tab active" id="loginTab">Login</button>
+                <button type="button" class="auth-tab" id="registerTab">Register</button>
+            </div>
+
+            <form id="authForm">
+                <div id="nameGroup" class="hidden">
+                    <label for="authName">Full Name</label>
+                    <input type="text" id="authName" placeholder="Enter your full name">
+                </div>
+
+                <label for="authEmail">Email Address</label>
+                <input type="email" id="authEmail" placeholder="Enter your email" required>
+
+                <label for="authPassword">Password</label>
+                <input type="password" id="authPassword" placeholder="Enter your password (min 6 chars)" required>
+
+                <p id="authError" class="auth-error hidden"></p>
+
+                <button type="submit" class="primary-btn auth-submit" id="authSubmitBtn">
+                    Login to Dashboard →
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="app-container hidden">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">◆</span>
+                <h2>EventHub</h2>
+            </div>
+
+            <div class="menu-label">MENU</div>
+
+            <nav class="navigation">
+                <a href="#" class="nav-link active" data-page="dashboard"><span>▦</span> Dashboard</a>
+                <a href="#" class="nav-link" data-page="discover"><span>⌕</span> Discover Events</a>
+                <a href="#" class="nav-link" data-page="registrations"><span>✓</span> My Registrations</a>
+                <a href="#" class="nav-link" data-page="myevents"><span>✦</span> My Events</a>
+                <a href="#" class="nav-link" data-page="profile"><span>♙</span> My Profile</a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="help-card">
+                    <div class="help-icon">◆</div>
+                    <h3>Hosting something?</h3>
+                    <p>Create an event and start collecting registrations in a minute.</p>
+                    <button id="helpBtn">Create Event</button>
+                </div>
+                <div class="sidebar-user">
+                    <div class="avatar">U</div>
+                    <div>
+                        <h4 id="sidebarName">Your Name</h4>
+                        <p id="sidebarOrg">Event member</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <header class="topbar">
+                <div>
+                    <p class="breadcrumb" id="breadcrumbText">Pages / Dashboard</p>
+                    <h2 id="topbarTitle">Dashboard</h2>
+                </div>
+
+                <div class="topbar-right">
+                    <span class="status">● System Online</span>
+                    <div class="avatar">U</div>
+                    <button id="logoutBtn" class="logout-btn">Logout</button>
+                </div>
+            </header>
+
+            <!-- Dashboard -->
+            <section class="page-section" id="dashboard">
+
+                <div class="welcome-banner">
+                    <div>
+                        <span class="welcome-tag">◆ EVENT MANAGEMENT</span>
+                        <h1>Plan, host and join <br><span>events that matter.</span></h1>
+                        <p>Browse upcoming events, register in one click, and manage your own events with live capacity tracking.</p>
+                        <div class="banner-actions">
+                            <button class="primary-btn" id="browseBtn">Browse Events →</button>
+                            <button class="ghost-btn" id="createBtn">+ Create Event</button>
+                        </div>
+                    </div>
+                    <div class="banner-art">◆</div>
+                </div>
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Overview</h2>
+                        <p>Your activity at a glance.</p>
+                    </div>
+                    <span class="date-label">YOUR ANALYTICS</span>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-top"><span>Upcoming Events</span><span class="stat-icon teal">⌕</span></div>
+                        <h2 id="statUpcoming">00</h2>
+                        <p>Open on the platform</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-top"><span>My Registrations</span><span class="stat-icon amber">✓</span></div>
+                        <h2 id="statRegistrations">00</h2>
+                        <p>Events you signed up for</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-top"><span>Events Hosted</span><span class="stat-icon pink">✦</span></div>
+                        <h2 id="statCreated">00</h2>
+                        <p>Events you created</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-top"><span>Total Attendees</span><span class="stat-icon blue">☻</span></div>
+                        <h2 id="statAttendees">00</h2>
+                        <p>Across your events</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div>
+                                <h3>Your Events Fill Rate</h3>
+                                <p>Registrations against capacity</p>
+                            </div>
+                            <span class="panel-badge">LIVE DATA</span>
+                        </div>
+                        <div id="topEventBars"></div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div>
+                                <h3>Overall Fill Rate</h3>
+                                <p>Across all events you host</p>
+                            </div>
+                        </div>
+                        <div class="fill-circle" id="fillCircle">
+                            <div class="circle-inner">
+                                <h2 id="fillCircleText">0%</h2>
+                                <span>Filled</span>
+                            </div>
+                        </div>
+                        <div class="next-event" id="nextEventBox"></div>
+                    </div>
+                </div>
+
+                <div class="panel recommendation-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Coming Up</h3>
+                            <p>The next events you might like</p>
+                        </div>
+                        <button class="text-btn" data-goto="discover">View All →</button>
+                    </div>
+                    <div class="event-grid" id="dashboardEvents"></div>
+                </div>
+            </section>
+
+            <!-- Discover -->
+            <section class="page-section hidden" id="discover">
+                <div class="page-title">
+                    <h1>Discover Events</h1>
+                    <p>Search and filter upcoming events, then register in one click.</p>
+                </div>
+
+                <form class="filter-bar" id="filterForm">
+                    <input type="search" id="filterSearch" placeholder="Search by title, venue or description">
+                    <select id="filterCategory"><option value="All">All categories</option></select>
+                    <select id="filterScope">
+                        <option value="upcoming">Upcoming</option>
+                        <option value="past">Past</option>
+                        <option value="all">All dates</option>
+                    </select>
+                </form>
+
+                <div class="event-grid" id="discoverEvents"></div>
+            </section>
+
+            <!-- My Registrations -->
+            <section class="page-section hidden" id="registrations">
+                <div class="page-title">
+                    <h1>My Registrations</h1>
+                    <p>Events you have signed up for.</p>
+                </div>
+                <div class="event-grid" id="registrationEvents"></div>
+            </section>
+
+            <!-- My Events -->
+            <section class="page-section hidden" id="myevents">
+                <div class="page-title page-title-row">
+                    <div>
+                        <h1>My Events</h1>
+                        <p>Create, edit and manage the events you host.</p>
+                    </div>
+                    <button class="primary-btn" id="newEventBtn">+ New Event</button>
+                </div>
+                <div class="event-grid" id="myEventList"></div>
+            </section>
+
+            <!-- Profile -->
+            <section class="page-section hidden" id="profile">
+                <div class="page-title">
+                    <h1>My Profile</h1>
+                    <p>Manage your account information.</p>
+                </div>
+                <div class="panel form-panel">
+                    <h3>Personal Information</h3>
+                    <form id="profileForm">
+                        <label for="profileName">Full Name</label>
+                        <input type="text" id="profileName" required>
+                        <label for="profileEmail">Email Address</label>
+                        <input type="email" id="profileEmail" required>
+                        <label for="profilePhone">Phone</label>
+                        <input type="tel" id="profilePhone" placeholder="Optional">
+                        <label for="profileOrg">Organization</label>
+                        <input type="text" id="profileOrg" placeholder="College, club or company (optional)">
+                        <label for="profileBio">About</label>
+                        <textarea id="profileBio" rows="3" placeholder="A short bio (optional)"></textarea>
+                        <button type="submit" class="primary-btn">Save Profile</button>
+                    </form>
+                </div>
+            </section>
+
+            <footer>
+                <p>© 2026 EventHub. Event Management System.</p>
+                <span>Built with Node.js, Express, MongoDB and JWT.</span>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Create / Edit Event Modal -->
+    <div class="modal hidden" id="eventModal" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
+        <div class="modal-card">
+            <div class="modal-head">
+                <h3 id="eventModalTitle">Create Event</h3>
+                <button type="button" class="modal-close" data-close-modal aria-label="Close">×</button>
+            </div>
+            <form id="eventForm">
+                <input type="hidden" id="eventId">
+
+                <label for="eventTitle">Title</label>
+                <input type="text" id="eventTitle" placeholder="e.g. Hack Night 2026" required>
+
+                <label for="eventDescription">Description</label>
+                <textarea id="eventDescription" rows="3" placeholder="What is this event about?"></textarea>
+
+                <div class="form-row">
+                    <div>
+                        <label for="eventCategory">Category</label>
+                        <select id="eventCategory"></select>
+                    </div>
+                    <div>
+                        <label for="eventVenue">Venue</label>
+                        <input type="text" id="eventVenue" placeholder="Hall, address or link" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label for="eventDate">Date</label>
+                        <input type="date" id="eventDate" required>
+                    </div>
+                    <div>
+                        <label for="eventTime">Time</label>
+                        <input type="time" id="eventTime" value="10:00" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label for="eventCapacity">Capacity</label>
+                        <input type="number" id="eventCapacity" min="1" step="1" value="50" required>
+                    </div>
+                    <div>
+                        <label for="eventPrice">Price (₹, 0 = free)</label>
+                        <input type="number" id="eventPrice" min="0" step="1" value="0">
+                    </div>
+                </div>
+
+                <p id="eventFormError" class="auth-error hidden"></p>
+
+                <div class="modal-actions">
+                    <button type="button" class="ghost-btn" data-close-modal>Cancel</button>
+                    <button type="submit" class="primary-btn" id="eventSubmitBtn">Create Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Attendees Modal -->
+    <div class="modal hidden" id="attendeeModal" role="dialog" aria-modal="true" aria-labelledby="attendeeModalTitle">
+        <div class="modal-card">
+            <div class="modal-head">
+                <h3 id="attendeeModalTitle">Attendees</h3>
+                <button type="button" class="modal-close" data-close-modal aria-label="Close">×</button>
+            </div>
+            <div id="attendeeList" class="attendee-list"></div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
